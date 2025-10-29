@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Correlation & Sensor Form (with Preview)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background-color: #f7f9fc;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+      color: #444;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    input[readonly] {
+      background-color: #f2f2f2;
+    }
+    fieldset {
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+    }
+    legend {
+      font-weight: bold;
+      color: #007bff;
+    }
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      color: white;
+    }
+    button.preview {
+      background: #17a2b8;
+    }
+    button.preview:hover {
+      background: #138496;
+    }
+    button.send {
+      background: #007bff;
+    }
+    button.send:hover {
+      background: #0056b3;
+    }
+    button.clear {
+      background: #dc3545;
+    }
+    button.clear:hover {
+      background: #b02a37;
+    }
+    pre {
+      background: #f0f0f0;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 20px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h2>Auto Correlation & Sensors Form</h2>
+
+  <form id="dataForm">
+    <fieldset>
+      <legend>Correlation Information</legend>
+
+      <label for="correlationId">Correlation ID (auto):</label>
+      <input type="text" id="correlationId" readonly />
+
+      <label for="correlationConfidence">Correlation Confidence (%):</label>
+      <input type="number" id="correlationConfidence" required />
+
+      <label for="correlationTimeStamp">Correlation Timestamp (auto):</label>
+      <input type="datetime-local" id="correlationTimeStamp" readonly />
+
+      <label for="leakStation">Leak Station:</label>
+      <input type="text" id="leakStation" required />
+    </fieldset>
+
+    <fieldset>
+      <legend>Sensor 1</legend>
+      <label for="sensorId1">Sensor ID (auto):</label>
+      <input type="text" id="sensorId1" readonly />
+
+      <label for="sensorName1">Sensor Name:</label>
+      <input type="text" id="sensorName1" required />
+
+      <label for="sensorDataTime1">Sensor Data Time (auto):</label>
+      <input type="datetime-local" id="sensorDataTime1" readonly />
+
+      <label for="siteId1">Site ID:</label>
+      <input type="text" id="siteId1" required />
+
+      <label for="siteName1">Site Name:</label>
+      <input type="text" id="siteName1" required />
+
+      <label for="coordStation1">Coord Station:</label>
+      <input type="text" id="coordStation1" required />
+
+      <label for="latitude1">Latitude:</label>
+      <input type="text" id="latitude1" required />
+
+      <label for="longitude1">Longitude:</label>
+      <input type="text" id="longitude1" required />
+    </fieldset>
+
+    <fieldset>
+      <legend>Sensor 2</legend>
+      <label for="sensorId2">Sensor ID (auto):</label>
+      <input type="text" id="sensorId2" readonly />
+
+      <label for="sensorName2">Sensor Name:</label>
+      <input type="text" id="sensorName2" required />
+
+      <label for="sensorDataTime2">Sensor Data Time (auto):</label>
+      <input type="datetime-local" id="sensorDataTime2" readonly />
+
+      <label for="siteId2">Site ID:</label>
+      <input type="text" id="siteId2" required />
+
+      <label for="siteName2">Site Name:</label>
+      <input type="text" id="siteName2" required />
+
+      <label for="coordStation2">Coord Station:</label>
+      <input type="text" id="coordStation2" required />
+
+      <label for="latitude2">Latitude:</label>
+      <input type="text" id="latitude2" required />
+
+      <label for="longitude2">Longitude:</label>
+      <input type="text" id="longitude2" required />
+    </fieldset>
+
+    <div class="button-group">
+      <button type="button" class="preview" onclick="previewJSON()">Preview</button>
+      <button type="button" class="send" onclick="sendData()">Send</button>
+      <button type="button" class="clear" onclick="clearForm()">Clear</button>
+    </div>
+  </form>
+
+  <pre id="output"></pre>
+
+  <script>
+    let correlationCounter = 1;
+    let sensorCounter = 1001;
+
+    function generateAutoValues() {
+      const now = new Date();
+      const formattedDate = now.toISOString().slice(0, 16);
+      document.getElementById("correlationId").value =
+        "CORR-" + String(correlationCounter).padStart(4, "0");
+      document.getElementById("correlationTimeStamp").value = formattedDate;
+
+      document.getElementById("sensorId1").value =
+        "SNS-" + String(sensorCounter).padStart(4, "0");
+      document.getElementById("sensorId2").value =
+        "SNS-" + String(sensorCounter + 1).padStart(4, "0");
+
+      document.getElementById("sensorDataTime1").value = formattedDate;
+      document.getElementById("sensorDataTime2").value = formattedDate;
+    }
+
+    function getFormData() {
+      return {
+        correlationId: document.getElementById("correlationId").value,
+        correlationConfidence: document.getElementById("correlationConfidence").value,
+        correlationTimeStamp: document.getElementById("correlationTimeStamp").value,
+        leakStation: document.getElementById("leakStation").value,
+        sensors: [
+          {
+            sensorId: document.getElementById("sensorId1").value,
+            sensorDataTime: document.getElementById("sensorDataTime1").value,
+            sensorName: document.getElementById("sensorName1").value,
+            siteId: document.getElementById("siteId1").value,
+            siteName: document.getElementById("siteName1").value,
+            coordStation: document.getElementById("coordStation1").value,
+            latitude: document.getElementById("latitude1").value,
+            longitude: document.getElementById("longitude1").value,
+          },
+          {
+            sensorId: document.getElementById("sensorId2").value,
+            sensorDataTime: document.getElementById("sensorDataTime2").value,
+            sensorName: document.getElementById("sensorName2").value,
+            siteId: document.getElementById("siteId2").value,
+            siteName: document.getElementById("siteName2").value,
+            coordStation: document.getElementById("coordStation2").value,
+            latitude: document.getElementById("latitude2").value,
+            longitude: document.getElementById("longitude2").value,
+          },
+        ],
+      };
+    }
+
+    function previewJSON() {
+      const data = getFormData();
+      document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+    }
+
+function sendData() {
+  const data = getFormData();
+
+ //API link
+  fetch("https://webhook.site/e751b91b-1872-4ca6-9389-528b38eb8053", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to send data");
+      }
+      return response.json();
+    })
+    .then((result) => {
+      document.getElementById("output").textContent =
+        "✅ Sent Successfully:\n" + JSON.stringify(result, null, 2);
+
+      // Auto increment for next record
+      correlationCounter++;
+      sensorCounter += 2;
+      generateAutoValues();
+    })
+    .catch((error) => {
+      document.getElementById("output").textContent = "❌ Error: " + error.message;
+    });
+}
+
+    function clearForm() {
+      document.querySelectorAll("input:not([readonly])").forEach((el) => (el.value = ""));
+      document.getElementById("output").textContent = "";
+    }
+
+    window.onload = generateAutoValues;
+  </script>
+</body>
+</html>
