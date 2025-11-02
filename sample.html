@@ -1,19 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Correlation & Sensor Form (with Preview)</title>
   <style>
+    header {
+      background-color: #ffffff;
+      border-bottom: 1px solid #ddd;
+      padding: 10px 30px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 15px;
+    }
+
+    .logo {
+      max-width: 110px;
+      height: auto;
+    }
+
+     h1 {
+      font-size: 20px;
+      color: #333;
+      margin: 0;
+      font-weight: 600;
+    }
+
     body {
       font-family: Arial, sans-serif;
       margin: 30px;
       background-color: #f7f9fc;
     }
-    h2 {
-      text-align: center;
-      color: #333;
-    }
+
     form {
       max-width: 800px;
       margin: 0 auto;
@@ -22,12 +46,14 @@
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
+
     label {
       display: block;
       margin-top: 12px;
       font-weight: bold;
       color: #444;
     }
+
     input {
       width: 100%;
       padding: 8px;
@@ -36,24 +62,31 @@
       border-radius: 6px;
       font-size: 14px;
     }
+
     input[readonly] {
       background-color: #f2f2f2;
     }
+
     fieldset {
       margin-top: 20px;
       border: 1px solid #ddd;
       border-radius: 8px;
       padding: 15px;
     }
+
     legend {
       font-weight: bold;
-      color: #007bff;
+      color: #001DC8
+
+;
     }
+
     .button-group {
       display: flex;
       gap: 10px;
       margin-top: 20px;
     }
+
     button {
       flex: 1;
       padding: 10px;
@@ -63,24 +96,31 @@
       font-size: 16px;
       color: white;
     }
+
     button.preview {
-      background: #17a2b8;
+      background: #e18b26;
     }
+
     button.preview:hover {
-      background: #138496;
+      background: #C37E2D;
     }
+
     button.send {
       background: #007bff;
     }
+
     button.send:hover {
       background: #0056b3;
     }
+
     button.clear {
       background: #dc3545;
     }
+
     button.clear:hover {
       background: #b02a37;
     }
+
     pre {
       background: #f0f0f0;
       padding: 15px;
@@ -91,10 +131,23 @@
       margin-right: auto;
       white-space: pre-wrap;
     }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 15px 0;
+      font-size: 14px;
+      color: #666;
+      border-top: 1px solid #ddd;
+    }
   </style>
 </head>
+
 <body>
-  <h2>Auto Correlation & Sensors Form</h2>
+  <div class="header-content">
+    <img src="ALIH Logo.jpeg" alt="AILH Logo" class="logo" />
+    <h1>Correlation & Sensors Form</h1>
+  </div>
 
   <form id="dataForm">
     <fieldset>
@@ -232,36 +285,36 @@
       document.getElementById("output").textContent = JSON.stringify(data, null, 2);
     }
 
-function sendData() {
-  const data = getFormData();
+    function sendData() {
+      const data = getFormData();
 
- //API link
-  fetch("https://webhook.site/e751b91b-1872-4ca6-9389-528b38eb8053", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Failed to send data");
-      }
-      return response.json();
-    })
-    .then((result) => {
-      document.getElementById("output").textContent =
-        "✅ Sent Successfully:\n" + JSON.stringify(result, null, 2);
+      //API link
+      fetch("https://webhook.site/e751b91b-1872-4ca6-9389-528b38eb8053", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to send data");
+          }
+          return response.json();
+        })
+        .then((result) => {
+          document.getElementById("output").textContent =
+            "✅ Sent Successfully:\n" + JSON.stringify(result, null, 2);
 
-      // Auto increment for next record
-      correlationCounter++;
-      sensorCounter += 2;
-      generateAutoValues();
-    })
-    .catch((error) => {
-      document.getElementById("output").textContent = "❌ Error: " + error.message;
-    });
-}
+          // Auto increment for next record
+          correlationCounter++;
+          sensorCounter += 2;
+          generateAutoValues();
+        })
+        .catch((error) => {
+          document.getElementById("output").textContent = "❌ Error: " + error.message;
+        });
+    }
 
     function clearForm() {
       document.querySelectorAll("input:not([readonly])").forEach((el) => (el.value = ""));
@@ -270,5 +323,10 @@ function sendData() {
 
     window.onload = generateAutoValues;
   </script>
+  <footer>
+    ©️2025 AILH | All Rights Reserved
+  </footer>
+
 </body>
+
 </html>
